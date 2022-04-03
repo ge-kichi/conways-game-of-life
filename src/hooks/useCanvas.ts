@@ -69,7 +69,7 @@ const useCanvas = () => {
         cgol = cgol.generate();
         visualizer(cgol.state);
         commit(UpdateGen, cgol.gen);
-      }, 1000 / 60);
+      }, 1000 / 30);
     };
 
     init();
