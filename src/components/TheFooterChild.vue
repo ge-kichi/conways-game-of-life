@@ -2,7 +2,7 @@
   <div class="the-footer-child el-center">
     <small class="the-footer-child__container"
       ><BaseLink
-        url="https://github.com/l1ck0h/elementary-cellular-automaton"
+        url="https://github.com/l1ck0h/conways-game-of-life"
         label="GitHub"
       />
       / &copy; 2022 l1ck0h</small
