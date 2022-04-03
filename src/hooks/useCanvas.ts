@@ -32,6 +32,7 @@ const useCanvas = () => {
 
     const init = () => {
       clearInterval(intervalID);
+      node.removeEventListener("click", start);
       clear();
       const clientWidth = node.clientWidth;
       const clientHeight = node.clientHeight;
@@ -41,6 +42,7 @@ const useCanvas = () => {
       canvasHeight = maxGen * cellRatio;
       node.setAttribute("width", canvasWidth.toString());
       node.setAttribute("height", canvasHeight.toString());
+      node.addEventListener("click", start);
     };
 
     const visualizer = (state: Array<Int8Array>) => {
@@ -75,7 +77,6 @@ const useCanvas = () => {
       clearTimeout(timeoutID);
       timeoutID = setTimeout(init, 1000);
     });
-    node.addEventListener("click", start);
   });
   return sketchIn;
 };
