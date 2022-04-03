@@ -10,15 +10,19 @@ export type State = {
 };
 
 export const GetterTypes: {
+  Pattern: "Pattern";
   Gen: "Gen";
 } = {
+  Pattern: "Pattern",
   Gen: "Gen",
 };
 
 export const MutationTypes: {
-  Gen: "Gen";
+  UpdatePattern: "UpdatePattern";
+  UpdateGen: "UpdateGen";
 } = {
-  Gen: "Gen",
+  UpdatePattern: "UpdatePattern",
+  UpdateGen: "UpdateGen",
 };
 
 export const store = createStore<State>({
@@ -27,12 +31,18 @@ export const store = createStore<State>({
     gen: 0,
   },
   getters: {
+    [GetterTypes.Pattern](state) {
+      return state.pattern;
+    },
     [GetterTypes.Gen](state) {
-      return state.gen;
+      return state.gen.toString();
     },
   },
   mutations: {
-    [MutationTypes.Gen](state, gen: number) {
+    [MutationTypes.UpdatePattern](state, pattern: Pattern) {
+      state.pattern = pattern;
+    },
+    [MutationTypes.UpdateGen](state, gen: number) {
       state.gen = gen;
     },
   },

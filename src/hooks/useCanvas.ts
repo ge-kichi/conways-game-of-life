@@ -1,13 +1,15 @@
 import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
-import { key, MutationTypes } from "@/store";
+import { GetterTypes, key, MutationTypes } from "@/store";
 import { create, CGOL } from "@/modules/CGOL";
 
 const cellRatio = 16;
 const cellSizeRatio = 0.95;
+const cellSize = cellRatio * cellSizeRatio;
 const cellStyle = "#00933B";
 
-const { Gen } = MutationTypes;
+const { Pattern } = GetterTypes;
+const { UpdateGen } = MutationTypes;
 
 let context: CanvasRenderingContext2D;
 let canvasWidth: number;
@@ -19,7 +21,7 @@ let timeoutID: number;
 let intervalID: number;
 
 const useCanvas = () => {
-  const { commit } = useStore(key);
+  const { commit, getters } = useStore(key);
   const sketchIn = ref();
 
   onMounted(() => {
@@ -42,18 +44,15 @@ const useCanvas = () => {
     };
 
     const visualizer = (state: Array<Int8Array>) => {
-      const w = cellRatio * cellSizeRatio;
-      const h = cellRatio * cellSizeRatio;
-      context.fillStyle = cellStyle;
       for (let i = 0; i < state.length; i++) {
         const column = state[i];
         const y = i * cellRatio;
         for (let j = 0; j < column.length; j++) {
           const x = j * cellRatio;
           if (column[j] === 1) {
-            context.fillRect(x, y, w, h);
+            context.fillRect(x, y, cellSize, cellSize);
           } else {
-            context.clearRect(x, y, w, h);
+            context.clearRect(x, y, cellSize, cellSize);
           }
         }
       }
@@ -61,12 +60,13 @@ const useCanvas = () => {
 
     const start = () => {
       clear();
-      cgol = create("random", spaceSize, maxGen);
+      cgol = create(getters[Pattern], spaceSize, maxGen);
+      context.fillStyle = cellStyle;
       visualizer(cgol.state);
       intervalID = setInterval(() => {
         cgol = cgol.generate();
         visualizer(cgol.state);
-        commit(Gen, cgol.gen);
+        commit(UpdateGen, cgol.gen);
       });
     };
 

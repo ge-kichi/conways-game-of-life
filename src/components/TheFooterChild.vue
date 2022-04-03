@@ -10,11 +10,12 @@
   </div>
 </template>
 <script lang="ts">
+import { defineComponent } from "vue";
 import BaseLink from "@/components/BaseLink.vue";
-export default {
+export default defineComponent({
   name: "TheFooterChild",
   components: { BaseLink },
-};
+});
 </script>
 <style scoped>
 .the-footer-child__container {

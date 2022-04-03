@@ -13,8 +13,8 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, SetupContext } from "vue";
-export default {
+import { defineComponent, ref, SetupContext } from "vue";
+export default defineComponent({
   name: "BaseStatus",
   emits: ["onclick"],
   props: {
@@ -34,7 +34,7 @@ export default {
   setup(_: unknown, context: SetupContext) {
     return { isClickable: ref(context.attrs.onclick) };
   },
-};
+});
 </script>
 <style scoped>
 .base-status {

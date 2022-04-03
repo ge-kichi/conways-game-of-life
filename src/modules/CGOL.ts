@@ -34,31 +34,9 @@ class CGOL {
 
   generate(): CGOL {
     const nextState: Array<Int8Array> = [];
-    for (let y = 0; y < this._state.length; y++) {
-      //   const column = this._state[y];
-      //   for (let x = 0; x < column.length; x++) {
-      //     // 自分と近傍のセルの状態を取得
-      //     // c: center (自分自身)
-      //     // nw: north west, ne: north east, c: center ...
-      //     const nw = this._state[this.north(y)][this.west(x)];
-      //     const n = this._state[this.north(y)][x];
-      //     const ne = this._state[this.north(y)][this.east(x)];
-      //     const w = this._state[y][this.west(x)];
-      //     const c = this._state[y][x];
-      //     const e = this._state[y][this.east(x)];
-      //     const sw = this._state[this.sorth(y)][this.west(x)];
-      //     const s = this._state[this.sorth(y)][x];
-      //     const se = this._state[this.sorth(y)][this.east(x)];
-      //     const neighborCellSum = nw + n + ne + w + e + sw + s + se;
-      //     if (c === 0 && neighborCellSum === 3) {
-      //       column[x] = 1;
-      //     } else if (c == 1 && (neighborCellSum === 2 || neighborCellSum === 3)) {
-      //       column[x] = 1;
-      //     } else {
-      //       column[x] = 0;
-      //     }
-      //   }
-      const column = this._state[y].map((_, x) => {
+    for (let y = 0; y < this._height; y++) {
+      const nextColumn = new Int8Array(this._width);
+      for (let x = 0; x < this._width; x++) {
         // 自分と近傍のセルの状態を取得
         // c: center (自分自身)
         // nw: north west, ne: north east, c: center ...
@@ -73,14 +51,17 @@ class CGOL {
         const se = this._state[this.sorth(y)][this.east(x)];
         const neighborCellSum = nw + n + ne + w + e + sw + s + se;
         if (c === 0 && neighborCellSum === 3) {
-          return 1;
-        } else if (c == 1 && (neighborCellSum === 2 || neighborCellSum === 3)) {
-          return 1;
+          nextColumn[x] = 1;
+        } else if (
+          c === 1 &&
+          (neighborCellSum === 2 || neighborCellSum === 3)
+        ) {
+          nextColumn[x] = 1;
         } else {
-          return 0;
+          nextColumn[x] = 0;
         }
-      });
-      nextState[y] = column;
+      }
+      nextState[y] = nextColumn;
     }
 
     // 最後に入れ替え
@@ -116,8 +97,10 @@ export const create = (
     // ランダムver.
     case "random": {
       for (let i = 0; i < state.length; i++) {
-        const column = state[i].map(() => Math.floor(Math.random() * 2));
-        state[i] = column;
+        const column = state[i];
+        for (let j = 0; j < column.length; j++) {
+          column[j] = Math.floor(Math.random() * 2);
+        }
       }
       break;
     }

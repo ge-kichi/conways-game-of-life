@@ -1,26 +1,45 @@
 <template>
-  <label for="dark_select" style="color: #fff">nes-select.is-dark</label>
-  <div class="nes-select is-dark">
-    <select required id="dark_select">
-      <option value="" disabled selected hidden>Select...</option>
-      <option value="0">To be</option>
-      <option value="1">Not to be</option>
-    </select>
+  <div class="base-select">
+    <div class="nes-select is-dark">
+      <select @change="$emit('update:modelValue', $event.target.value)">
+        <option
+          v-for="(option, i) in options"
+          :value="option"
+          :key="i"
+          :selected="option === modelValue"
+        >
+          {{ option }}
+        </option>
+      </select>
+    </div>
   </div>
 </template>
 <script lang="ts">
-export default {
+import { defineComponent, PropType } from "vue";
+export default defineComponent({
   name: "BaseSelect",
   emits: ["update:modelValue"],
   props: {
-    attrs: {
-      type: Object,
-      required: false,
+    title: {
+      type: String,
+      required: true,
+    },
+    options: {
+      type: Array as PropType<Array<string>>,
+      required: true,
     },
     modelValue: {
       type: String,
       required: true,
     },
   },
-};
+});
 </script>
+<style scoped>
+.base-select {
+  font-size: var(--ms-1);
+}
+.base-select * {
+  cursor: inherit;
+}
+</style>
