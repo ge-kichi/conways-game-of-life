@@ -1,10 +1,17 @@
 // 型定義
-export type Pattern = "random";
+export type Pattern = "random" | "grider";
 export type { CGOL };
+
+const GRIDER = [
+  [0, 0, 0, 0],
+  [0, 0, 1, 0],
+  [0, 0, 0, 1],
+  [0, 1, 1, 1],
+];
 
 class CGOL {
   // 状態
-  private _state: Array<Int8Array>;
+  private _state: Int8Array[];
   // 高さ
   private _height: number;
   // 幅
@@ -12,7 +19,7 @@ class CGOL {
   // 世代
   private _gen: number;
 
-  constructor(state: Array<Int8Array>, gen: number) {
+  constructor(state: Int8Array[], gen: number) {
     this._state = state;
     this._height = state.length;
     this._width = state[0].length;
@@ -33,7 +40,7 @@ class CGOL {
   }
 
   generate(): CGOL {
-    const nextState: Array<Int8Array> = [];
+    const nextState: Int8Array[] = [];
     for (let y = 0; y < this._height; y++) {
       const nextColumn = new Int8Array(this._width);
       for (let x = 0; x < this._width; x++) {
@@ -82,26 +89,40 @@ class CGOL {
   }
 }
 
-export const create = (
-  pattern: Pattern,
-  width: number,
-  height: number
-): CGOL => {
-  // 最初の状態を初期化
-  const state: Array<Int8Array> = [];
+const updateState = (width: number, height: number, pattern?: number[][]) => {
+  const state: Int8Array[] = [];
+  const atRandom = (column: number[]) => {
+    for (let j = 0; j < width; j++) {
+      column.push(Math.floor(Math.random() * 2));
+    }
+  };
+  const withPattern = (patternColumn: number[], column: number[]) => {
+    for (let j = 0; j < width; j++) {
+      column.push(patternColumn ? (patternColumn[j] ? 1 : 0) : 0);
+    }
+  };
   for (let i = 0; i < height; i++) {
-    state.push(new Int8Array(width));
+    const column: number[] = [];
+    pattern ? withPattern(pattern[i], column) : atRandom(column);
+    state.push(new Int8Array(column));
   }
+  return state;
+};
+
+export const create = (
+  width: number,
+  height: number,
+  pattern: Pattern
+): CGOL => {
+  let state: Array<Int8Array>;
 
   switch (pattern) {
-    // ランダムver.
     case "random": {
-      for (let i = 0; i < state.length; i++) {
-        const column = state[i];
-        for (let j = 0; j < column.length; j++) {
-          column[j] = Math.floor(Math.random() * 2);
-        }
-      }
+      state = updateState(width, height);
+      break;
+    }
+    case "grider": {
+      state = updateState(width, height, GRIDER);
       break;
     }
   }

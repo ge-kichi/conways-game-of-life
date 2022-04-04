@@ -28,10 +28,13 @@ const useCanvas = () => {
     const node = sketchIn.value;
     context = node.getContext("2d");
 
-    const clear = () => context.clearRect(0, 0, canvasWidth, canvasHeight);
+    const clear = () => {
+      clearInterval(intervalID);
+      context.clearRect(0, 0, canvasWidth, canvasHeight);
+      commit(UpdateGen, 0);
+    };
 
     const init = () => {
-      clearInterval(intervalID);
       node.removeEventListener("click", start);
       clear();
       const clientWidth = node.clientWidth;
@@ -62,7 +65,7 @@ const useCanvas = () => {
 
     const start = () => {
       clear();
-      cgol = create(getters[Pattern], spaceSize, maxGen);
+      cgol = create(spaceSize, maxGen, getters[Pattern]);
       context.fillStyle = cellStyle;
       visualizer(cgol.state);
       intervalID = setInterval(() => {

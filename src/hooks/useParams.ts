@@ -9,7 +9,7 @@ const useParams = () => {
   const { commit, getters } = useStore(key);
 
   const genContent = computed(() => getters[Gen]);
-  const patternOptions = reactive(["random"]);
+  const patternOptions = reactive(["random", "grider"]);
   const patternSelected = computed({
     get: () => getters[Pattern],
     set: (value: string) => commit(UpdatePattern, value),
