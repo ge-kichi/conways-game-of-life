@@ -25,7 +25,7 @@ export default defineComponent({
       required: true,
     },
     options: {
-      type: Array as PropType<Array<string>>,
+      type: Array as PropType<string[]>,
       required: true,
     },
     modelValue: {

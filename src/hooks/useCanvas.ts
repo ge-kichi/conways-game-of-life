@@ -48,7 +48,7 @@ const useCanvas = () => {
       node.addEventListener("click", start);
     };
 
-    const visualizer = (state: Array<Int8Array>) => {
+    const visualizer = (state: Int8Array[]) => {
       for (let i = 0; i < state.length; i++) {
         const column = state[i];
         const y = i * cellRatio;

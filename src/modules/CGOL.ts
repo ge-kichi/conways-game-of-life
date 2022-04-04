@@ -80,7 +80,7 @@ class CGOL {
     return new CGOL(this._state, this._gen);
   }
 
-  get state(): Array<Int8Array> {
+  get state(): Int8Array[] {
     return this._state;
   }
 
@@ -114,7 +114,7 @@ export const create = (
   height: number,
   pattern: Pattern
 ): CGOL => {
-  let state: Array<Int8Array>;
+  let state: Int8Array[];
 
   switch (pattern) {
     case "random": {
