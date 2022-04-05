@@ -35,7 +35,7 @@ const useCanvas = () => {
     };
 
     const init = () => {
-      node.removeEventListener("click", start);
+      node.removeEventListener("click", play);
       clear();
       const clientWidth = node.clientWidth;
       const clientHeight = node.clientHeight;
@@ -45,7 +45,7 @@ const useCanvas = () => {
       canvasHeight = maxGen * cellRatio;
       node.setAttribute("width", canvasWidth.toString());
       node.setAttribute("height", canvasHeight.toString());
-      node.addEventListener("click", start);
+      node.addEventListener("click", play);
     };
 
     const visualizer = (state: Int8Array[]) => {
@@ -63,7 +63,7 @@ const useCanvas = () => {
       }
     };
 
-    const start = () => {
+    const play = () => {
       clear();
       cgol = create(spaceSize, maxGen, getters[Pattern]);
       context.fillStyle = cellStyle;

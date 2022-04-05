@@ -4,7 +4,7 @@ import { key, GetterTypes, MutationTypes } from "@/store";
 import { Patterns } from "@/modules/CGOL";
 
 const { Gen, Pattern } = GetterTypes;
-const { UpdatePattern } = MutationTypes;
+const { UpdatePattern, UpdatePlayState } = MutationTypes;
 
 const useParams = () => {
   const { commit, getters } = useStore(key);
@@ -13,7 +13,10 @@ const useParams = () => {
   const patternOptions = reactive(Patterns);
   const patternSelected = computed({
     get: () => getters[Pattern],
-    set: (value: string) => commit(UpdatePattern, value),
+    set: (value: string) => {
+      commit(UpdatePattern, value);
+      commit(UpdatePlayState, "stopped");
+    },
   });
 
   return { genContent, patternOptions, patternSelected };
