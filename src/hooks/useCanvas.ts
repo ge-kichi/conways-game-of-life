@@ -58,7 +58,6 @@ const useCanvas = () => {
   };
 
   const init = (node: HTMLCanvasElement) => {
-    node.removeEventListener("click", play);
     clear();
     const clientWidth = node.clientWidth;
     const clientHeight = node.clientHeight;
@@ -68,19 +67,12 @@ const useCanvas = () => {
     canvasHeight = maxGen * cellRatio;
     node.setAttribute("width", canvasWidth.toString());
     node.setAttribute("height", canvasHeight.toString());
-    node.addEventListener("click", play);
   };
 
   onMounted(() => {
     const node = sketchIn.value;
     const playState = computed<PlayState>(() => getters[PlayState]);
     context = node.getContext("2d");
-
-    window.addEventListener("resize", () => {
-      clearTimeout(timeoutID);
-      timeoutID = setTimeout(() => init(node), 1000);
-    });
-    init(node);
 
     watchEffect(() => {
       switch (playState.value) {
@@ -93,6 +85,14 @@ const useCanvas = () => {
         }
       }
     });
+
+    window.addEventListener("resize", () => {
+      clearTimeout(timeoutID);
+      timeoutID = setTimeout(() => init(node), 1000);
+    });
+
+    node.addEventListener("click", play);
+    init(node);
   });
 
   return sketchIn;
