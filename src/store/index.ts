@@ -4,7 +4,7 @@ import { Pattern } from "@/modules/CGOL";
 
 export const key: InjectionKey<Store<State>> = Symbol();
 
-type PlayState = "played" | "paused" | "stopped";
+export type PlayState = "played" | "paused" | "stopped";
 
 export type State = {
   pattern: Pattern;

@@ -1,6 +1,6 @@
-import { ref, onMounted } from "vue";
+import { computed, ref, onMounted, watchEffect } from "vue";
 import { useStore } from "vuex";
-import { GetterTypes, key, MutationTypes } from "@/store";
+import { GetterTypes, key, MutationTypes, PlayState } from "@/store";
 import { create, CGOL } from "@/modules/CGOL";
 
 const cellRatio = 16;
@@ -8,7 +8,7 @@ const cellSizeRatio = 0.95;
 const cellSize = cellRatio * cellSizeRatio;
 const cellStyle = "#00933B";
 
-const { Pattern } = GetterTypes;
+const { Pattern, PlayState } = GetterTypes;
 const { UpdateGen } = MutationTypes;
 
 let context: CanvasRenderingContext2D;
@@ -26,6 +26,7 @@ const useCanvas = () => {
 
   onMounted(() => {
     const node = sketchIn.value;
+    const playState = computed<PlayState>(() => getters[PlayState]);
     context = node.getContext("2d");
 
     const clear = () => {
@@ -75,12 +76,25 @@ const useCanvas = () => {
       }, 1000 / 30);
     };
 
-    init();
     window.addEventListener("resize", () => {
       clearTimeout(timeoutID);
       timeoutID = setTimeout(init, 1000);
     });
+    init();
+
+    watchEffect(() => {
+      switch (playState.value) {
+        case "stopped": {
+          console.log(playState.value);
+          break;
+        }
+        default: {
+          console.log(playState.value);
+        }
+      }
+    });
   });
+
   return sketchIn;
 };
 

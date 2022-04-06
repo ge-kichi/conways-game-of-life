@@ -9,17 +9,17 @@ const { UpdatePattern, UpdatePlayState } = MutationTypes;
 const useParams = () => {
   const { commit, getters } = useStore(key);
 
-  const genContent = computed(() => getters[Gen]);
-  const patternOptions = reactive(Patterns);
-  const patternSelected = computed({
-    get: () => getters[Pattern],
-    set: (value: string) => {
-      commit(UpdatePattern, value);
-      commit(UpdatePlayState, "stopped");
-    },
-  });
-
-  return { genContent, patternOptions, patternSelected };
+  return {
+    genContent: computed(() => getters[Gen]),
+    patternOptions: reactive(Patterns),
+    patternSelected: computed({
+      get: () => getters[Pattern],
+      set: (value: string) => {
+        commit(UpdatePattern, value);
+        commit(UpdatePlayState, "stopped");
+      },
+    }),
+  };
 };
 
 export default useParams;
