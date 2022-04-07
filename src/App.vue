@@ -24,8 +24,7 @@ export default defineComponent({
   name: "App",
   components: { TheHeaderChild, TheFooterChild },
   setup() {
-    const sketchIn = useCanvas();
-    return { sketchIn };
+    return useCanvas();
   },
 });
 </script>
@@ -59,12 +58,5 @@ body,
   height: 100%;
   cursor: pointer;
   border: solid thin white;
-}
-/* utilities */
-.app-util-clickable {
-  cursor: pointer !important;
-}
-.app-util-highlight {
-  z-index: var(--zIndex-highlight) !important;
 }
 </style>

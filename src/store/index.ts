@@ -4,62 +4,83 @@ import { Pattern } from "@/modules/CGOL";
 
 export const key: InjectionKey<Store<State>> = Symbol();
 
-export type PlayState = "played" | "paused" | "stopped";
+export type PlayState = "started" | "paused" | "stopped";
 
 export type State = {
-  pattern: Pattern;
   gen: number;
+  pattern: Pattern;
   playState: PlayState;
 };
 
 export const GetterTypes: {
-  Pattern: "Pattern";
   Gen: "Gen";
+  Pattern: "Pattern";
   PlayState: "PlayState";
 } = {
-  Pattern: "Pattern",
   Gen: "Gen",
+  Pattern: "Pattern",
   PlayState: "PlayState",
 };
 
-export const MutationTypes: {
-  UpdatePattern: "UpdatePattern";
+export const ActionTypes: {
+  ClearCanvas: "ClearCanvas";
+  SelectPattern: "SelectPattern";
+  Stop: "Stop";
+  TogglePlayPause: "TogglePlayPause";
   UpdateGen: "UpdateGen";
-  UpdatePlayState: "UpdatePlayState";
 } = {
-  UpdatePattern: "UpdatePattern",
+  ClearCanvas: "ClearCanvas",
+  SelectPattern: "SelectPattern",
+  Stop: "Stop",
+  TogglePlayPause: "TogglePlayPause",
   UpdateGen: "UpdateGen",
-  UpdatePlayState: "UpdatePlayState",
 };
 
 export const store = createStore<State>({
   state: {
-    pattern: "random",
     gen: 0,
+    pattern: "random",
     playState: "stopped",
   },
   getters: {
-    [GetterTypes.Pattern](state) {
-      return state.pattern;
-    },
     [GetterTypes.Gen](state) {
       return state.gen.toString();
+    },
+    [GetterTypes.Pattern](state) {
+      return state.pattern;
     },
     [GetterTypes.PlayState](state) {
       return state.playState;
     },
   },
   mutations: {
-    [MutationTypes.UpdatePattern](state, pattern: Pattern) {
-      state.pattern = pattern;
-    },
-    [MutationTypes.UpdateGen](state, gen: number) {
+    UpdateGen(state, gen: number) {
       state.gen = gen;
     },
-    [MutationTypes.UpdatePlayState](state, playState: PlayState) {
+    UpdatePattern(state, pattern: Pattern) {
+      state.pattern = pattern;
+    },
+    UpdatePlayState(state, playState: PlayState) {
       state.playState = playState;
     },
   },
-  actions: {},
+  actions: {
+    [ActionTypes.Stop]({ commit }) {
+      commit("UpdatePlayState", "stopped");
+    },
+    [ActionTypes.SelectPattern]({ commit }, pattern: Pattern) {
+      commit("UpdatePattern", pattern);
+      commit("UpdatePlayState", "stopped");
+    },
+    [ActionTypes.TogglePlayPause]({ commit, state }) {
+      commit(
+        "UpdatePlayState",
+        state.playState !== "started" ? "started" : "paused"
+      );
+    },
+    [ActionTypes.UpdateGen]({ commit }, gen: number) {
+      commit("UpdateGen", gen);
+    },
+  },
   modules: {},
 });

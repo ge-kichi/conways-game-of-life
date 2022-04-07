@@ -1,6 +1,6 @@
 import { computed, ref, onMounted, watchEffect } from "vue";
 import { useStore } from "vuex";
-import { GetterTypes, key, MutationTypes, PlayState } from "@/store";
+import { ActionTypes, GetterTypes, key, PlayState } from "@/store";
 import { create, CGOL } from "@/modules/CGOL";
 
 const cellRatio = 16;
@@ -9,25 +9,38 @@ const cellSize = cellRatio * cellSizeRatio;
 const cellStyle = "#00933B";
 
 const { Pattern, PlayState } = GetterTypes;
-const { UpdateGen } = MutationTypes;
+const { Stop, TogglePlayPause, UpdateGen } = ActionTypes;
 
 let context: CanvasRenderingContext2D;
 let canvasWidth: number;
 let canvasHeight: number;
-let spaceSize: number;
-let maxGen: number;
+let cellCountWidth: number;
+let cellCountHeight: number;
 let cgol: CGOL;
 let timeoutID: number;
 let intervalID: number;
 
 const useCanvas = () => {
-  const { commit, getters } = useStore(key);
+  const { dispatch, getters } = useStore(key);
   const sketchIn = ref();
+  const playState = computed<PlayState>(() => getters[PlayState]);
 
   const clear = () => {
     clearInterval(intervalID);
     context.clearRect(0, 0, canvasWidth, canvasHeight);
-    commit(UpdateGen, 0);
+  };
+
+  const init = (node: HTMLCanvasElement) => {
+    clear();
+    const clientWidth = node.clientWidth;
+    const clientHeight = node.clientHeight;
+    cellCountWidth = Math.floor(clientWidth / cellRatio);
+    cellCountHeight = Math.floor(clientHeight / cellRatio) - 1;
+    canvasWidth = cellCountWidth * cellRatio;
+    canvasHeight = cellCountHeight * cellRatio;
+    node.setAttribute("width", canvasWidth.toString());
+    node.setAttribute("height", canvasHeight.toString());
+    dispatch(Stop);
   };
 
   const visualizer = (state: Int8Array[]) => {
@@ -37,6 +50,7 @@ const useCanvas = () => {
       for (let j = 0; j < column.length; j++) {
         const x = j * cellRatio;
         if (column[j] === 1) {
+          context.fillStyle = cellStyle;
           context.fillRect(x, y, cellSize, cellSize);
         } else {
           context.clearRect(x, y, cellSize, cellSize);
@@ -45,57 +59,44 @@ const useCanvas = () => {
     }
   };
 
-  const play = () => {
-    clear();
-    cgol = create(spaceSize, maxGen, getters[Pattern]);
-    context.fillStyle = cellStyle;
-    visualizer(cgol.state);
-    intervalID = setInterval(() => {
-      cgol = cgol.generate();
-      visualizer(cgol.state);
-      commit(UpdateGen, cgol.gen);
-    }, 1000 / 30);
-  };
-
-  const init = (node: HTMLCanvasElement) => {
-    clear();
-    const clientWidth = node.clientWidth;
-    const clientHeight = node.clientHeight;
-    spaceSize = Math.floor(clientWidth / cellRatio);
-    maxGen = Math.floor(clientHeight / cellRatio) - 1;
-    canvasWidth = spaceSize * cellRatio;
-    canvasHeight = maxGen * cellRatio;
-    node.setAttribute("width", canvasWidth.toString());
-    node.setAttribute("height", canvasHeight.toString());
-  };
-
   onMounted(() => {
     const node = sketchIn.value;
-    const playState = computed<PlayState>(() => getters[PlayState]);
     context = node.getContext("2d");
-
-    watchEffect(() => {
-      switch (playState.value) {
-        case "stopped": {
-          console.log(playState.value);
-          break;
-        }
-        default: {
-          console.log(playState.value);
-        }
-      }
-    });
 
     window.addEventListener("resize", () => {
       clearTimeout(timeoutID);
       timeoutID = setTimeout(() => init(node), 1000);
     });
 
-    node.addEventListener("click", play);
+    node.addEventListener("click", () => dispatch(TogglePlayPause));
     init(node);
+
+    watchEffect(() => {
+      switch (playState.value) {
+        case "started": {
+          intervalID = setInterval(() => {
+            cgol = cgol.generate();
+            visualizer(cgol.state);
+            dispatch(UpdateGen, cgol.gen);
+          }, 1000 / 30);
+          break;
+        }
+        case "paused": {
+          clearInterval(intervalID);
+          break;
+        }
+        case "stopped": {
+          clear();
+          cgol = create(cellCountWidth, cellCountHeight, getters[Pattern]);
+          visualizer(cgol.state);
+          dispatch(UpdateGen, cgol.gen);
+          break;
+        }
+      }
+    });
   });
 
-  return sketchIn;
+  return { sketchIn };
 };
 
 export default useCanvas;

@@ -1,23 +1,20 @@
 import { reactive, computed } from "vue";
 import { useStore } from "vuex";
-import { key, GetterTypes, MutationTypes } from "@/store";
+import { ActionTypes, GetterTypes, key } from "@/store";
 import { Patterns } from "@/modules/CGOL";
 
 const { Gen, Pattern } = GetterTypes;
-const { UpdatePattern, UpdatePlayState } = MutationTypes;
+const { SelectPattern } = ActionTypes;
 
 const useParams = () => {
-  const { commit, getters } = useStore(key);
+  const { dispatch, getters } = useStore(key);
 
   return {
     genContent: computed(() => getters[Gen]),
     patternOptions: reactive(Patterns),
     patternSelected: computed({
       get: () => getters[Pattern],
-      set: (value: string) => {
-        commit(UpdatePattern, value);
-        commit(UpdatePlayState, "stopped");
-      },
+      set: (value: string) => dispatch(SelectPattern, value),
     }),
   };
 };
