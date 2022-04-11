@@ -8,7 +8,7 @@ const cellSizeRatio = 0.9;
 const cellSize = cellRatio * cellSizeRatio;
 const cellStyle = "#00933B";
 const fps = 1000 / 30;
-const waitTime = 1000;
+const waitTime = 500;
 
 const { Pattern, PlayState } = GetterTypes;
 const { Ready, Stop, TogglePlayPause, UpdateGen } = ActionTypes;
