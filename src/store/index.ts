@@ -4,7 +4,12 @@ import { Pattern } from "@/modules/CGOL";
 
 export const key: InjectionKey<Store<State>> = Symbol();
 
-export type PlayState = "started" | "paused" | "stopped" | "ready";
+export type PlayState =
+  | "initialized"
+  | "paused"
+  | "readied"
+  | "started"
+  | "stopped";
 
 export type State = {
   gen: number;
@@ -23,12 +28,14 @@ export const GetterTypes: {
 };
 
 export const ActionTypes: {
+  Initialize: "Initialize";
   Ready: "Ready";
   SelectPattern: "SelectPattern";
   Stop: "Stop";
   TogglePlayPause: "TogglePlayPause";
   UpdateGen: "UpdateGen";
 } = {
+  Initialize: "Initialize",
   Ready: "Ready",
   SelectPattern: "SelectPattern",
   Stop: "Stop",
@@ -40,7 +47,7 @@ export const store = createStore<State>({
   state: {
     gen: 0,
     pattern: "random",
-    playState: "ready",
+    playState: "stopped",
   },
   getters: {
     [GetterTypes.Gen](state) {
@@ -65,8 +72,11 @@ export const store = createStore<State>({
     },
   },
   actions: {
+    [ActionTypes.Initialize]({ commit }) {
+      commit("UpdatePlayState", "initialized");
+    },
     [ActionTypes.Ready]({ commit }) {
-      commit("UpdatePlayState", "ready");
+      commit("UpdatePlayState", "readied");
     },
     [ActionTypes.Stop]({ commit }) {
       commit("UpdatePlayState", "stopped");
