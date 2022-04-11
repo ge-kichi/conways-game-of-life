@@ -4,7 +4,7 @@ import { Pattern } from "@/modules/CGOL";
 
 export const key: InjectionKey<Store<State>> = Symbol();
 
-export type PlayState = "started" | "paused" | "stopped";
+export type PlayState = "started" | "paused" | "stopped" | "ready";
 
 export type State = {
   gen: number;
@@ -40,7 +40,7 @@ export const store = createStore<State>({
   state: {
     gen: 0,
     pattern: "random",
-    playState: "stopped",
+    playState: "ready",
   },
   getters: {
     [GetterTypes.Gen](state) {
