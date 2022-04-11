@@ -11,7 +11,7 @@ const fps = 1000 / 30;
 const waitTime = 1000;
 
 const { Pattern, PlayState } = GetterTypes;
-const { Stop, TogglePlayPause, UpdateGen } = ActionTypes;
+const { Ready, Stop, TogglePlayPause, UpdateGen } = ActionTypes;
 
 let context: CanvasRenderingContext2D;
 let canvasWidth: number;
@@ -93,7 +93,10 @@ const useCanvas = () => {
 
     const node = sketchIn.value;
     context = node.getContext("2d");
-    window.addEventListener("resize", () => init(node));
+    window.addEventListener("resize", () => {
+      init(node);
+      dispatch(Ready);
+    });
     init(node);
   });
 

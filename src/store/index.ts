@@ -23,13 +23,13 @@ export const GetterTypes: {
 };
 
 export const ActionTypes: {
-  ClearCanvas: "ClearCanvas";
+  Ready: "Ready";
   SelectPattern: "SelectPattern";
   Stop: "Stop";
   TogglePlayPause: "TogglePlayPause";
   UpdateGen: "UpdateGen";
 } = {
-  ClearCanvas: "ClearCanvas",
+  Ready: "Ready",
   SelectPattern: "SelectPattern",
   Stop: "Stop",
   TogglePlayPause: "TogglePlayPause",
@@ -65,6 +65,9 @@ export const store = createStore<State>({
     },
   },
   actions: {
+    [ActionTypes.Ready]({ commit }) {
+      commit("UpdatePlayState", "ready");
+    },
     [ActionTypes.Stop]({ commit }) {
       commit("UpdatePlayState", "stopped");
     },
