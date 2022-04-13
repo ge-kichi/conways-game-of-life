@@ -30,13 +30,9 @@ export default defineComponent({
 </script>
 <style>
 :root {
-  --color-transparent: rgba(0, 0, 0, 0);
   --color-light: rgb(255, 255, 255);
   --color-neutral: rgb(182, 182, 183);
   --color-dark: rgb(33, 37, 41);
-  --color-dark-opacity: rgba(33, 37, 41, 0.8);
-  --zIndex-highlight: 1000;
-  --zIndex-overlay: 999;
 }
 * {
   cursor: auto;

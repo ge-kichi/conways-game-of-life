@@ -1693,6 +1693,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/ramda@npm:^0.28.8":
+  version: 0.28.8
+  resolution: "@types/ramda@npm:0.28.8"
+  dependencies:
+    ts-toolbelt: ^6.15.1
+  checksum: 775d8d2e7f82990e9850bb4768302cdfc7dbb8c434ff178a1592ac24a77be6c551d333c264fb93bc1a0035bc52197aebf8891b52d28885c09b4256e75cc28623
+  languageName: node
+  linkType: hard
+
 "@types/range-parser@npm:*":
   version: 1.2.4
   resolution: "@types/range-parser@npm:1.2.4"
@@ -3583,6 +3592,7 @@ __metadata:
   dependencies:
     "@fontsource/press-start-2p": ^4.5.5
     "@l1ck0h/every-layout.css": "github:l1ck0h/every-layout.css"
+    "@types/ramda": ^0.28.8
     "@typescript-eslint/eslint-plugin": ^5.4.0
     "@typescript-eslint/parser": ^5.4.0
     "@vue/cli-plugin-babel": ~5.0.0
@@ -3599,6 +3609,7 @@ __metadata:
     gh-pages: ^3.2.3
     nes.css: ^2.3.0
     prettier: ^2.4.1
+    ramda: ^0.28.0
     typescript: ~4.5.5
     vue: ^3.2.13
     vuex: ^4.0.0
@@ -7567,6 +7578,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ramda@npm:^0.28.0":
+  version: 0.28.0
+  resolution: "ramda@npm:0.28.0"
+  checksum: 44ea6e5010bba70151b6a92d8114a91915e8b5a16105cce65fae58c9d7386b812c429645e35f21141d7087568550ce383bc10ee1a65cdec951f4b69ea457e6a4
+  languageName: node
+  linkType: hard
+
 "randombytes@npm:^2.1.0":
   version: 2.1.0
   resolution: "randombytes@npm:2.1.0"
@@ -8697,6 +8715,13 @@ __metadata:
     typescript: "*"
     webpack: ^5.0.0
   checksum: 3afd9a4cc1d46738ac3f2decc7dfa655e0183d4d2d48c7a113ea9f3ac313304f54be59252cde2ef04757c791e28cfcfc63323d3dd1f2f949485242c1ea4835e5
+  languageName: node
+  linkType: hard
+
+"ts-toolbelt@npm:^6.15.1":
+  version: 6.15.5
+  resolution: "ts-toolbelt@npm:6.15.5"
+  checksum: 24ad00cfd9ce735c76c873a9b1347eac475b94e39ebbdf100c9019dce88dd5f4babed52884cf82bb456a38c28edd0099ab6f704b84b2e5e034852b618472c1f3
   languageName: node
   linkType: hard
 

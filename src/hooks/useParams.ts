@@ -1,7 +1,12 @@
 import { reactive, computed } from "vue";
 import { useStore } from "vuex";
+import { zipObj } from "ramda";
 import { ActionTypes, GetterTypes, key } from "@/store";
-import { Patterns } from "@/modules/CGOL";
+import {
+  keyOfOthers,
+  keyOfPatternState,
+  keyOfStillLifes,
+} from "@/modules/CGOL";
 
 const { Gen, Pattern } = GetterTypes;
 const { SelectPattern } = ActionTypes;
@@ -11,7 +16,9 @@ const useParams = () => {
 
   return {
     genContent: computed(() => getters[Gen]),
-    patternOptions: reactive(Patterns),
+    patternOptGroup: reactive(
+      zipObj(keyOfPatternState, [keyOfStillLifes, keyOfOthers])
+    ),
     patternSelected: computed({
       get: () => getters[Pattern],
       set: (value: string) => dispatch(SelectPattern, value),

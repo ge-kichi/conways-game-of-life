@@ -13,10 +13,12 @@
     "@l1ck0h/every-layout.css": "github:l1ck0h/every-layout.css",
     "core-js": "^3.8.3",
     "nes.css": "^2.3.0",
+    "ramda": "^0.28.0",
     "vue": "^3.2.13",
     "vuex": "^4.0.0"
   },
   "devDependencies": {
+    "@types/ramda": "^0.28.8",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "@vue/cli-plugin-babel": "~5.0.0",

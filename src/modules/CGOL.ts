@@ -1,11 +1,4 @@
-// 型定義
-export type Pattern =
-  | "random"
-  | "static"
-  | "oscillator"
-  | "grider"
-  | "grider-gun";
-export type { CGOL };
+import { flatten } from "ramda";
 
 class CGOL {
   // 状態
@@ -86,6 +79,7 @@ class CGOL {
     return this._gen;
   }
 }
+export type { CGOL };
 
 const updateState = (width: number, height: number, pattern?: number[][]) => {
   const state: Int8Array[] = [];
@@ -107,95 +101,158 @@ const updateState = (width: number, height: number, pattern?: number[][]) => {
   return state;
 };
 
-export const Patterns: Pattern[] = [
-  "random",
-  "static",
-  "oscillator",
-  "grider",
-  "grider-gun",
-];
+const stillLifes = {
+  block: [
+    [0, 0, 0, 0],
+    [0, 1, 1, 0],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0],
+  ],
+  "bee-hive": [
+    [0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 0, 0],
+    [0, 1, 0, 0, 1, 0],
+    [0, 0, 1, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+  ],
+  load: [
+    [0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 0, 0],
+    [0, 1, 0, 0, 1, 0],
+    [0, 0, 1, 0, 1, 0],
+    [0, 0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 0, 0],
+  ],
+  boat: [
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 0, 0],
+    [0, 1, 0, 1, 0],
+    [0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 0],
+  ],
+  tub: [
+    [0, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0],
+    [0, 1, 0, 1, 0],
+    [0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 0],
+  ],
+};
+type StillLifes = keyof typeof stillLifes;
+export const keyOfStillLifes = Object.keys(stillLifes) as StillLifes[];
+
+const others = {
+  static: [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0],
+    [1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1],
+    [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+  ],
+  oscillator: [
+    [1, 0, 0, 0, 0, 1, 0, 0],
+    [1, 0, 0, 0, 1, 0, 0, 1],
+    [1, 0, 0, 0, 1, 0, 0, 1],
+    [0, 0, 0, 0, 0, 0, 1, 0],
+  ],
+  grider: [
+    [0, 0, 0, 0],
+    [0, 0, 1, 0],
+    [0, 0, 0, 1],
+    [0, 1, 1, 1],
+  ],
+  "grider-gun": [
+    [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+    [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+    [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
+    ],
+    [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
+    ],
+    [
+      1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+    [
+      1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+    [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+    [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+    [
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+  ],
+};
+type Others = keyof typeof others | "random";
+export const keyOfOthers = [...Object.keys(others), "random"] as Others[];
+
+export type Pattern = Others | StillLifes;
+export const patterns = flatten([keyOfStillLifes, keyOfOthers]);
+// export const patterns = [
+//   "block",
+//   "bee-hive",
+//   "load",
+//   "boat",
+//   "tub",
+//   "static",
+//   "oscillator",
+//   "grider",
+//   "grider-gun",
+//   "random",
+// ] as const;
+
+const patternState = {
+  "still-lifes": stillLifes,
+  // oscillators: {},
+  // spaceships: {},
+  others: others,
+};
+export const keyOfPatternState = Object.keys(patternState);
 
 export const create = (
   width: number,
   height: number,
   pattern: Pattern
 ): CGOL => {
-  let state: Int8Array[];
+  let _patternState: number[][] | undefined = undefined;
 
   switch (pattern) {
-    case "random": {
-      state = updateState(width, height);
+    case "block":
+    case "bee-hive":
+    case "load":
+    case "boat":
+    case "tub": {
+      _patternState = patternState["still-lifes"][pattern];
       break;
     }
-    case "static": {
-      state = updateState(width, height, [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0],
-        [1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1],
-        [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-      ]);
-      break;
-    }
-    case "oscillator": {
-      state = updateState(width, height, [
-        [1, 0, 0, 0, 0, 1, 0, 0],
-        [1, 0, 0, 0, 1, 0, 0, 1],
-        [1, 0, 0, 0, 1, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 1, 0],
-      ]);
-      break;
-    }
-    case "grider": {
-      state = updateState(width, height, [
-        [0, 0, 0, 0],
-        [0, 0, 1, 0],
-        [0, 0, 0, 1],
-        [0, 1, 1, 1],
-      ]);
-      break;
-    }
+    case "static":
+    case "oscillator":
+    case "grider":
     case "grider-gun": {
-      state = updateState(width, height, [
-        [
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        ],
-        [
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-          0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        ],
-        [
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0,
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-        ],
-        [
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0,
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-        ],
-        [
-          1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0,
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        ],
-        [
-          1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
-          0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        ],
-        [
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
-          0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        ],
-        [
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        ],
-        [
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        ],
-      ]);
+      _patternState = patternState.others[pattern];
+      break;
+    }
+    case "random":
+    default: {
       break;
     }
   }
-  return new CGOL(state, 1);
+  return new CGOL(updateState(width, height, _patternState), 1);
 };

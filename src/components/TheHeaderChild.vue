@@ -8,7 +8,7 @@
         <BaseStatus title="GEN" :content="genContent" />
         <BaseSelect
           title="PATTERN"
-          :options="patternOptions"
+          :optGroup="patternOptGroup"
           v-model="patternSelected"
         />
       </div>
