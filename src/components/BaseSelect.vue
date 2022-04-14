@@ -27,7 +27,7 @@ export default defineComponent({
       required: true,
     },
     optGroup: {
-      type: Object,
+      type: Object as PropType<{ [x: string]: string[] }>,
       required: true,
     },
     modelValue: {

@@ -1,5 +1,13 @@
-import { flatten } from "ramda";
+import { zipObj } from "ramda";
+import { keyOfStillLifes, stillLifes, StillLife } from "./PatternStillLifes";
+import {
+  keyOfOscillators,
+  oscillators,
+  Oscillator,
+} from "./PatternOscillators";
+import { keyOfOthers, others, Others } from "./PatternOthers";
 
+export type { CGOL };
 class CGOL {
   // 状態
   private _state: Int8Array[];
@@ -79,7 +87,6 @@ class CGOL {
     return this._gen;
   }
 }
-export type { CGOL };
 
 const updateState = (width: number, height: number, pattern?: number[][]) => {
   const state: Int8Array[] = [];
@@ -101,158 +108,42 @@ const updateState = (width: number, height: number, pattern?: number[][]) => {
   return state;
 };
 
-const stillLifes = {
-  block: [
-    [0, 0, 0, 0],
-    [0, 1, 1, 0],
-    [0, 1, 1, 0],
-    [0, 0, 0, 0],
-  ],
-  "bee-hive": [
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 1, 1, 0, 0],
-    [0, 1, 0, 0, 1, 0],
-    [0, 0, 1, 1, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-  ],
-  load: [
-    [0, 0, 0, 0, 0, 0],
-    [0, 0, 1, 1, 0, 0],
-    [0, 1, 0, 0, 1, 0],
-    [0, 0, 1, 0, 1, 0],
-    [0, 0, 0, 1, 0, 0],
-    [0, 0, 0, 0, 0, 0],
-  ],
-  boat: [
-    [0, 0, 0, 0, 0],
-    [0, 1, 1, 0, 0],
-    [0, 1, 0, 1, 0],
-    [0, 0, 1, 0, 0],
-    [0, 0, 0, 0, 0],
-  ],
-  tub: [
-    [0, 0, 0, 0, 0],
-    [0, 0, 1, 0, 0],
-    [0, 1, 0, 1, 0],
-    [0, 0, 1, 0, 0],
-    [0, 0, 0, 0, 0],
-  ],
-};
-type StillLifes = keyof typeof stillLifes;
-export const keyOfStillLifes = Object.keys(stillLifes) as StillLifes[];
-
-const others = {
-  static: [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0],
-    [1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1],
-    [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-  ],
-  oscillator: [
-    [1, 0, 0, 0, 0, 1, 0, 0],
-    [1, 0, 0, 0, 1, 0, 0, 1],
-    [1, 0, 0, 0, 1, 0, 0, 1],
-    [0, 0, 0, 0, 0, 0, 1, 0],
-  ],
-  grider: [
-    [0, 0, 0, 0],
-    [0, 0, 1, 0],
-    [0, 0, 0, 1],
-    [0, 1, 1, 1],
-  ],
-  "grider-gun": [
-    [
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ],
-    [
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ],
-    [
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-    ],
-    [
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-    ],
-    [
-      1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ],
-    [
-      1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ],
-    [
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ],
-    [
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ],
-    [
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    ],
-  ],
-};
-type Others = keyof typeof others | "random";
-export const keyOfOthers = [...Object.keys(others), "random"] as Others[];
-
-export type Pattern = Others | StillLifes;
-export const patterns = flatten([keyOfStillLifes, keyOfOthers]);
-// export const patterns = [
-//   "block",
-//   "bee-hive",
-//   "load",
-//   "boat",
-//   "tub",
-//   "static",
-//   "oscillator",
-//   "grider",
-//   "grider-gun",
-//   "random",
-// ] as const;
-
-const patternState = {
+const patternGroup = {
   "still-lifes": stillLifes,
-  // oscillators: {},
+  oscillators,
   // spaceships: {},
-  others: others,
+  others,
 };
-export const keyOfPatternState = Object.keys(patternState);
+export const keyOfPatternGroup = zipObj(Object.keys(patternGroup), [
+  keyOfStillLifes,
+  keyOfOscillators,
+  keyOfOthers,
+]);
+export type Pattern = Others | StillLife | Oscillator;
 
 export const create = (
   width: number,
   height: number,
   pattern: Pattern
 ): CGOL => {
-  let _patternState: number[][] | undefined = undefined;
-
-  switch (pattern) {
-    case "block":
-    case "bee-hive":
-    case "load":
-    case "boat":
-    case "tub": {
-      _patternState = patternState["still-lifes"][pattern];
+  let patternState: number[][] | undefined;
+  switch (true) {
+    case keyOfStillLifes.includes(pattern): {
+      patternState = stillLifes[pattern as StillLife];
       break;
     }
-    case "static":
-    case "oscillator":
-    case "grider":
-    case "grider-gun": {
-      _patternState = patternState.others[pattern];
+    case keyOfOscillators.includes(pattern): {
+      patternState = oscillators[pattern as Oscillator];
       break;
     }
-    case "random":
+    case keyOfOthers.includes(pattern): {
+      patternState = others[pattern as Others];
+      break;
+    }
     default: {
+      patternState = undefined;
       break;
     }
   }
-  return new CGOL(updateState(width, height, _patternState), 1);
+  return new CGOL(updateState(width, height, patternState), 1);
 };
