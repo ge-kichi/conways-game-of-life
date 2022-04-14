@@ -7,7 +7,6 @@ import {
 } from "./PatternOscillators";
 import { keyOfOthers, others, Others } from "./PatternOthers";
 
-export type { CGOL };
 class CGOL {
   // 状態
   private _state: Int8Array[];
@@ -108,18 +107,13 @@ const updateState = (width: number, height: number, pattern?: number[][]) => {
   return state;
 };
 
-const patternGroup = {
-  "still-lifes": stillLifes,
-  oscillators,
-  // spaceships: {},
-  others,
-};
-export const keyOfPatternGroup = zipObj(Object.keys(patternGroup), [
-  keyOfStillLifes,
-  keyOfOscillators,
-  keyOfOthers,
-]);
+export type { CGOL };
 export type Pattern = Others | StillLife | Oscillator;
+
+export const keyOfPatternGroup = zipObj(
+  ["still-lifes", "oscillators", "others"],
+  [keyOfStillLifes, keyOfOscillators, keyOfOthers]
+);
 
 export const create = (
   width: number,
