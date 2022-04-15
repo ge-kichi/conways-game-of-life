@@ -37,5 +37,4 @@ export const stillLifes = {
 };
 
 export type StillLife = keyof typeof stillLifes;
-
 export const keyOfStillLifes = Object.keys(stillLifes);

@@ -44,5 +44,4 @@ export const oscillators = {
 };
 
 export type Oscillator = keyof typeof oscillators;
-
 export const keyOfOscillators = Object.keys(oscillators);

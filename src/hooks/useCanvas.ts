@@ -3,12 +3,9 @@ import { useStore } from "vuex";
 import { ActionTypes, GetterTypes, key, PlayState } from "@/store";
 import { create, CGOL } from "@/modules/CGOL";
 
-const cellRatio = 16;
-const cellSizeRatio = 0.9;
-const cellSize = cellRatio * cellSizeRatio;
-const cellStyle = "#00933B";
-const fps = 1000 / 30;
-const waitTime = 500;
+const cellSize = 16;
+const cellSide = cellSize * 0.9;
+const waitTime = 200;
 
 const { Pattern, PlayState } = GetterTypes;
 const { Initialize, Ready, TogglePlayPause, UpdateGen } = ActionTypes;
@@ -20,19 +17,19 @@ let cellCountWidth: number;
 let cellCountHeight: number;
 let cgol: CGOL;
 let timeoutID: number;
-let intervalID: number;
+let requestID: number;
 
 const visualizer = (state: Int8Array[]) => {
-  context.fillStyle = cellStyle;
+  context.fillStyle = "#00933B";
   for (let i = 0; i < state.length; i++) {
     const column = state[i];
-    const y = i * cellRatio;
+    const y = i * cellSize;
     for (let j = 0; j < column.length; j++) {
-      const x = j * cellRatio;
+      const x = j * cellSize;
       if (column[j] === 1) {
-        context.fillRect(x, y, cellSize, cellSize);
+        context.fillRect(x, y, cellSide, cellSide);
       } else {
-        context.clearRect(x, y, cellSize, cellSize);
+        context.clearRect(x, y, cellSide, cellSide);
       }
     }
   }
@@ -47,10 +44,10 @@ const useCanvas = () => {
 
   const init = (node: HTMLCanvasElement) => {
     const { clientWidth, clientHeight } = node;
-    cellCountWidth = Math.floor(clientWidth / cellRatio);
-    cellCountHeight = Math.floor(clientHeight / cellRatio) - 1;
-    canvasWidth = cellCountWidth * cellRatio;
-    canvasHeight = cellCountHeight * cellRatio;
+    cellCountWidth = Math.floor(clientWidth / cellSize);
+    cellCountHeight = Math.floor(clientHeight / cellSize);
+    canvasWidth = cellCountWidth * cellSize;
+    canvasHeight = cellCountHeight * cellSize;
     node.width = canvasWidth;
     node.height = canvasHeight;
     dispatch(Initialize);
@@ -61,12 +58,19 @@ const useCanvas = () => {
     timeoutID = setTimeout(() => init(node), waitTime);
   };
 
+  const render = () => {
+    cgol = cgol.generate();
+    visualizer(cgol.state);
+    dispatch(UpdateGen, cgol.gen);
+    requestID = requestAnimationFrame(render);
+  };
+
   onMounted(() => {
     watch(playState, (newValue) => {
       switch (newValue) {
         case "initialized": {
           node.removeEventListener("click", togglePlayPause);
-          clearInterval(intervalID);
+          cancelAnimationFrame(requestID);
           context.clearRect(0, 0, canvasWidth, canvasHeight);
           cgol = create(cellCountWidth, cellCountHeight, getters[Pattern]);
           visualizer(cgol.state);
@@ -76,16 +80,11 @@ const useCanvas = () => {
           break;
         }
         case "paused": {
-          clearInterval(intervalID);
+          cancelAnimationFrame(requestID);
           break;
         }
         case "started": {
-          // requestAnimationFrame
-          intervalID = setInterval(() => {
-            cgol = cgol.generate();
-            visualizer(cgol.state);
-            dispatch(UpdateGen, cgol.gen);
-          }, fps);
+          render();
           break;
         }
         case "stopped": {
