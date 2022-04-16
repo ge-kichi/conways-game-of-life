@@ -1,11 +1,5 @@
-import { zipObj } from "ramda";
-import { keyOfStillLifes, stillLifes, StillLife } from "./PatternStillLifes";
-import {
-  keyOfOscillators,
-  oscillators,
-  Oscillator,
-} from "./PatternOscillators";
-import { keyOfOthers, others, Others } from "./PatternOthers";
+import { Pattern as _Pattern, switchPattern } from "./Patterns";
+export { keyOfPatternGroup } from "./Patterns";
 
 class CGOL {
   // 状態
@@ -108,36 +102,12 @@ const updateState = (width: number, height: number, pattern?: number[][]) => {
 };
 
 export type { CGOL };
-export type Pattern = Others | StillLife | Oscillator;
-
-export const keyOfPatternGroup = zipObj(
-  ["still-lifes", "oscillators", "others"],
-  [keyOfStillLifes, keyOfOscillators, keyOfOthers]
-);
+export type Pattern = _Pattern;
 
 export const create = (
   width: number,
   height: number,
   pattern: Pattern
 ): CGOL => {
-  let patternState: number[][] | undefined;
-  switch (true) {
-    case keyOfStillLifes.includes(pattern): {
-      patternState = stillLifes[pattern as StillLife];
-      break;
-    }
-    case keyOfOscillators.includes(pattern): {
-      patternState = oscillators[pattern as Oscillator];
-      break;
-    }
-    case keyOfOthers.includes(pattern): {
-      patternState = others[pattern as Others];
-      break;
-    }
-    default: {
-      patternState = undefined;
-      break;
-    }
-  }
-  return new CGOL(updateState(width, height, patternState), 1);
+  return new CGOL(updateState(width, height, switchPattern(pattern)), 1);
 };

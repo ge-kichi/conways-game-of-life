@@ -1,10 +1,4 @@
-export const others = {
-  grider: [
-    [0, 0, 0, 0],
-    [0, 0, 1, 0],
-    [0, 0, 0, 1],
-    [0, 1, 1, 1],
-  ],
+export const infiniteGrowthes = {
   "grider-gun": [
     [
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
@@ -43,8 +37,7 @@ export const others = {
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ],
   ],
-  random: undefined,
 };
 
-export type Others = keyof typeof others;
-export const keyOfOthers = Object.keys(others);
+export type InfiniteGrowth = keyof typeof infiniteGrowthes;
+export const keyOfInfiniteGrowthes = Object.keys(infiniteGrowthes).sort();

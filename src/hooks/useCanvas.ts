@@ -4,8 +4,9 @@ import { ActionTypes, GetterTypes, key, PlayState } from "@/store";
 import { create, CGOL } from "@/modules/CGOL";
 
 const cellSize = 16;
-const cellSide = cellSize * 0.9;
-const waitTime = 200;
+const cellSide = Math.floor(cellSize * 0.9);
+const waitTime = 500;
+const fps = 12;
 
 const { Pattern, PlayState } = GetterTypes;
 const { Initialize, Ready, TogglePlayPause, UpdateGen } = ActionTypes;
@@ -17,15 +18,17 @@ let cellCountWidth: number;
 let cellCountHeight: number;
 let cgol: CGOL;
 let timeoutID: number;
-let requestID: number;
+let intervalID: number;
+
+const cellPos = (i: number) => i * cellSize + (cellSize - cellSide) / 2;
 
 const visualizer = (state: Int8Array[]) => {
   context.fillStyle = "#00933B";
   for (let i = 0; i < state.length; i++) {
     const column = state[i];
-    const y = i * cellSize;
+    const y = cellPos(i);
     for (let j = 0; j < column.length; j++) {
-      const x = j * cellSize;
+      const x = cellPos(j);
       if (column[j] === 1) {
         context.fillRect(x, y, cellSide, cellSide);
       } else {
@@ -58,19 +61,12 @@ const useCanvas = () => {
     timeoutID = setTimeout(() => init(node), waitTime);
   };
 
-  const render = () => {
-    cgol = cgol.generate();
-    visualizer(cgol.state);
-    dispatch(UpdateGen, cgol.gen);
-    requestID = requestAnimationFrame(render);
-  };
-
   onMounted(() => {
     watch(playState, (newValue) => {
       switch (newValue) {
         case "initialized": {
           node.removeEventListener("click", togglePlayPause);
-          cancelAnimationFrame(requestID);
+          clearInterval(intervalID);
           context.clearRect(0, 0, canvasWidth, canvasHeight);
           cgol = create(cellCountWidth, cellCountHeight, getters[Pattern]);
           visualizer(cgol.state);
@@ -80,11 +76,15 @@ const useCanvas = () => {
           break;
         }
         case "paused": {
-          cancelAnimationFrame(requestID);
+          clearInterval(intervalID);
           break;
         }
         case "started": {
-          render();
+          intervalID = setInterval(() => {
+            cgol = cgol.generate();
+            visualizer(cgol.state);
+            dispatch(UpdateGen, cgol.gen);
+          }, 1000 / fps);
           break;
         }
         case "stopped": {
