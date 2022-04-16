@@ -5,7 +5,7 @@
     >
       <h1 class="the-header-child__brand">CGOL</h1>
       <div class="the-header-child__statuses el-cluster">
-        <BaseStatus title="GEN" :content="genContent" />
+        <BaseStatus title="GEN" :content="gen" />
         <BaseSelect
           title="PATTERN"
           :optGroup="patternOptGroup"

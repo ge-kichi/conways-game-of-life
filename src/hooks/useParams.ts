@@ -10,7 +10,7 @@ const useParams = () => {
   const { dispatch, getters } = useStore(key);
 
   return {
-    genContent: computed(() => getters[Gen]),
+    gen: computed(() => getters[Gen]),
     patternOptGroup: reactive(keyOfPatternGroup),
     patternSelected: computed({
       get: () => getters[Pattern],
