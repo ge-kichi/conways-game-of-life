@@ -46,7 +46,7 @@ export const ActionTypes: {
 export const store = createStore<State>({
   state: {
     gen: 0,
-    pattern: "random",
+    pattern: "random 0.5",
     playState: "stopped",
   },
   getters: {

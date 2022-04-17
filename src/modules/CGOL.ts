@@ -1,9 +1,21 @@
-import { Pattern as _Pattern, switchPattern } from "./Patterns";
+import {
+  Cell,
+  CellArray as _CellArray,
+  isPatternState,
+  Pattern as _Pattern,
+  PatternState,
+  RandomPatternState,
+  switchPattern,
+} from "./Patterns";
 export { keyOfPatternGroup } from "./Patterns";
+
+export type CellArray = _CellArray;
+export type Pattern = _Pattern;
+export type { CGOL };
 
 class CGOL {
   // 状態
-  private _state: Int8Array[];
+  private _state: CellArray[];
   // 高さ
   private _height: number;
   // 幅
@@ -11,7 +23,7 @@ class CGOL {
   // 世代
   private _gen: number;
 
-  constructor(state: Int8Array[], gen: number) {
+  constructor(state: CellArray[], gen: number) {
     this._state = state;
     this._height = state.length;
     this._width = state[0].length;
@@ -32,9 +44,9 @@ class CGOL {
   }
 
   generate(): CGOL {
-    const nextState: Int8Array[] = [];
+    const nextState: CellArray[] = [];
     for (let y = 0; y < this._height; y++) {
-      const nextColumn = new Int8Array(this._width);
+      const nextColumn = new Array<Cell>(this._width);
       for (let x = 0; x < this._width; x++) {
         // 自分と近傍のセルの状態を取得
         // c: center (自分自身)
@@ -72,7 +84,7 @@ class CGOL {
     return new CGOL(this._state, this._gen);
   }
 
-  get state(): Int8Array[] {
+  get state(): CellArray[] {
     return this._state;
   }
 
@@ -81,28 +93,21 @@ class CGOL {
   }
 }
 
-const updateState = (width: number, height: number, pattern?: number[][]) => {
-  const state: Int8Array[] = [];
-  const atRandom = (column: number[]) => {
-    for (let j = 0; j < width; j++) {
-      column.push(Math.floor(Math.random() * 2));
-    }
-  };
-  const withPattern = (patternColumn: number[], column: number[]) => {
-    for (let j = 0; j < width; j++) {
-      column.push(patternColumn ? (patternColumn[j] ? 1 : 0) : 0);
-    }
-  };
+const updateState = (
+  width: number,
+  height: number,
+  pState: PatternState | RandomPatternState
+) => {
+  const state: CellArray[] = [];
   for (let i = 0; i < height; i++) {
-    const column: number[] = [];
-    pattern ? withPattern(pattern[i], column) : atRandom(column);
-    state.push(new Int8Array(column));
+    state.push(
+      isPatternState(pState)
+        ? pState(width, i)
+        : (pState as RandomPatternState)(width)
+    );
   }
   return state;
 };
-
-export type { CGOL };
-export type Pattern = _Pattern;
 
 export const create = (
   width: number,

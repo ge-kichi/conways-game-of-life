@@ -1,7 +1,7 @@
 import { computed, ref, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 import { ActionTypes, GetterTypes, key, PlayState } from "@/store";
-import { create, CGOL } from "@/modules/CGOL";
+import { CellArray, CGOL, create } from "@/modules/CGOL";
 
 const cellSize = 16;
 const cellSide = Math.floor(cellSize * 0.9);
@@ -22,7 +22,7 @@ let intervalID: number;
 
 const cellPos = (i: number) => i * cellSize + (cellSize - cellSide) / 2;
 
-const visualizer = (state: Int8Array[]) => {
+const visualizer = (state: CellArray[]) => {
   context.fillStyle = "#00933B";
   for (let i = 0; i < state.length; i++) {
     const column = state[i];
