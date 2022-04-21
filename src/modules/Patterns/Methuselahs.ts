@@ -13,6 +13,13 @@ export const methuselahs = {
     [0, 1, 1, 0, 0, 1, 1, 1, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
   ],
+  "r-pentomino": [
+    [0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 0],
+    [0, 1, 1, 0, 0],
+    [0, 0, 1, 0, 0],
+    [0, 0, 0, 0, 0],
+  ],
 };
 
 export type Methuselah = keyof typeof methuselahs;

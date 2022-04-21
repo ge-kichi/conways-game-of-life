@@ -6,10 +6,12 @@
     <header>
       <TheHeaderChild />
     </header>
-    <canvas
-      ref="sketchIn"
-      class="sketchIn el-cover__centered el-center el-center--gutters:0"
-    />
+    <main
+      ref="sketchIn__container"
+      class="sketchIn__container el-cover__centered el-center el-center--gutters:0"
+    >
+      <canvas ref="sketchIn" class="sketchIn" />
+    </main>
     <footer>
       <TheFooterChild />
     </footer>
@@ -45,9 +47,13 @@ html {
 html,
 body,
 #app,
-#app__container {
+#app__container,
+.sketchIn__container {
   width: 100%;
   height: 100%;
+}
+.sketchIn__container {
+  /* max-width: 60ch; */
 }
 .sketchIn {
   width: 100%;
