@@ -1,6 +1,5 @@
 import {
-  Cell,
-  CellArray as _CellArray,
+  Cell as _Cell,
   isPatternState,
   Pattern as _Pattern,
   PatternState,
@@ -9,13 +8,13 @@ import {
 } from "./Patterns";
 export { keyOfPatternGroup } from "./Patterns";
 
-export type CellArray = _CellArray;
+export type Cell = _Cell;
 export type Pattern = _Pattern;
 export type { CGOL };
 
 class CGOL {
   // 状態
-  private _state: CellArray[];
+  private _state: Cell[][];
   // 高さ
   private _height: number;
   // 幅
@@ -23,7 +22,7 @@ class CGOL {
   // 世代
   private _gen: number;
 
-  constructor(state: CellArray[], gen: number) {
+  constructor(state: Cell[][], gen: number) {
     this._state = state;
     this._height = state.length;
     this._width = state[0].length;
@@ -44,7 +43,7 @@ class CGOL {
   }
 
   generate(): CGOL {
-    const nextState: CellArray[] = [];
+    const nextState: Cell[][] = [];
     for (let y = 0; y < this._height; y++) {
       const nextColumn = new Array<Cell>(this._width);
       for (let x = 0; x < this._width; x++) {
@@ -84,7 +83,7 @@ class CGOL {
     return new CGOL(this._state, this._gen);
   }
 
-  get state(): CellArray[] {
+  get state(): Cell[][] {
     return this._state;
   }
 
@@ -98,7 +97,7 @@ const updateState = (
   height: number,
   pState: PatternState | RandomPatternState
 ) => {
-  const state: CellArray[] = [];
+  const state: Cell[][] = [];
   for (let i = 0; i < height; i++) {
     state.push(
       isPatternState(pState)

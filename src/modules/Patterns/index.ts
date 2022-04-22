@@ -39,14 +39,13 @@ export const keyOfPatternGroup = zipObj(
 );
 
 export type Cell = 0 | 1;
-export type CellArray = Array<Cell>;
 
-export type PatternState = (length: number, i: number) => CellArray;
-export type RandomPatternState = (length: number) => CellArray;
+export type PatternState = (length: number, i: number) => Cell[];
+export type RandomPatternState = (length: number) => Cell[];
 
-export const withPatternState: (pattern: CellArray[]) => PatternState =
+export const withPatternState: (pattern: Cell[][]) => PatternState =
   (pattern) => (length, i) => {
-    const column: CellArray = [];
+    const column: Cell[] = [];
     for (let j = 0; j < length; j++) {
       column.push(pattern[i] && pattern[i][j] ? 1 : 0);
     }
@@ -55,7 +54,7 @@ export const withPatternState: (pattern: CellArray[]) => PatternState =
 
 export const withRandomPatternState: (density: Density) => RandomPatternState =
   (density) => (length) => {
-    const column: CellArray = [];
+    const column: Cell[] = [];
     for (let j = 0; j < length; j++) {
       column.push(Number(Math.random() < density) as Cell);
     }
@@ -72,25 +71,21 @@ export const switchPattern = (
   const includes = (keys: string[]) => keys.includes(pattern);
   switch (true) {
     case includes(keyOfStillLifes): {
-      return withPatternState(stillLifes[pattern as StillLife] as CellArray[]);
+      return withPatternState(stillLifes[pattern as StillLife] as Cell[][]);
     }
     case includes(keyOfOscillators): {
-      return withPatternState(
-        oscillators[pattern as Oscillator] as CellArray[]
-      );
+      return withPatternState(oscillators[pattern as Oscillator] as Cell[][]);
     }
     case includes(keyOfSpaceShips): {
-      return withPatternState(spaceShips[pattern as SpaceShip] as CellArray[]);
+      return withPatternState(spaceShips[pattern as SpaceShip] as Cell[][]);
     }
     case includes(keyOfInfiniteGrowthes): {
       return withPatternState(
-        infiniteGrowthes[pattern as InfiniteGrowth] as CellArray[]
+        infiniteGrowthes[pattern as InfiniteGrowth] as Cell[][]
       );
     }
     case includes(keyOfMethuselahs): {
-      return withPatternState(
-        methuselahs[pattern as Methuselah] as CellArray[]
-      );
+      return withPatternState(methuselahs[pattern as Methuselah] as Cell[][]);
     }
     case includes(keyOfRandoms): {
       return withRandomPatternState(randoms[pattern as Random] as Density);

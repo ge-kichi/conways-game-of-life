@@ -1,10 +1,11 @@
 import { computed, ref, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 import { ActionTypes, GetterTypes, key, PlayState } from "@/store";
-import { CellArray, CGOL, create } from "@/modules/CGOL";
+import { Cell, CGOL, create } from "@/modules/CGOL";
 
-const cellSize = 16;
+const cellSize = 12;
 const cellSide = Math.floor(cellSize * 0.9);
+const waitTime = 0;
 const fps = 12;
 
 const { Pattern, PlayState } = GetterTypes;
@@ -16,11 +17,12 @@ let canvasHeight: number;
 let cellCountWidth: number;
 let cellCountHeight: number;
 let cgol: CGOL;
+let timeoutID: number;
 let intervalID: number;
 
 const cellPos = (i: number) => i * cellSize + (cellSize - cellSide) / 2;
 
-const visualizer = (state: CellArray[]) => {
+const visualizer = (state: Cell[][]) => {
   context.fillStyle = "#00933B";
   for (let i = 0; i < state.length; i++) {
     const column = state[i];
@@ -39,13 +41,12 @@ const visualizer = (state: CellArray[]) => {
 const useCanvas = () => {
   const { dispatch, getters } = useStore(key);
   const sketchIn = ref();
-  const sketchInContainer = ref();
   const playState = computed<PlayState>(() => getters[PlayState]);
 
   const togglePlayPause = () => dispatch(TogglePlayPause);
 
-  const init = (canvasNode: HTMLCanvasElement, containerNode: HTMLElement) => {
-    const { clientWidth, clientHeight } = containerNode;
+  const init = (canvasNode: HTMLCanvasElement) => {
+    const { clientWidth, clientHeight } = canvasNode;
     cellCountWidth = Math.floor(clientWidth / cellSize);
     cellCountHeight = Math.floor(clientHeight / cellSize);
     canvasWidth = cellCountWidth * cellSize;
@@ -55,9 +56,14 @@ const useCanvas = () => {
     dispatch(Initialize);
   };
 
+  const debounceInit = (canvasNode: HTMLCanvasElement) => {
+    clearTimeout(timeoutID);
+    timeoutID = setTimeout(() => init(canvasNode), waitTime);
+  };
+
   onMounted(() => {
     const canvasNode = sketchIn.value;
-    const containerNode = sketchInContainer.value;
+    context = canvasNode.getContext("2d");
 
     watch(playState, (newValue) => {
       switch (newValue) {
@@ -85,18 +91,17 @@ const useCanvas = () => {
           break;
         }
         case "stopped": {
-          init(canvasNode, containerNode);
+          init(canvasNode);
           break;
         }
       }
     });
 
-    context = canvasNode.getContext("2d");
-    window.addEventListener("resize", () => init(canvasNode, containerNode));
-    init(canvasNode, containerNode);
+    window.addEventListener("resize", () => debounceInit(canvasNode));
+    debounceInit(canvasNode);
   });
 
-  return { sketchIn: sketchIn, sketchIn__container: sketchInContainer };
+  return { sketchIn };
 };
 
 export default useCanvas;
