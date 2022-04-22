@@ -1,5 +1,5 @@
 export const infiniteGrowthes = {
-  "grider-gun": [
+  "Gosper grider-gun": [
     [
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
