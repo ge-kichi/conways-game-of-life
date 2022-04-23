@@ -1,10 +1,20 @@
-// 型定義
-export type Pattern = "random";
+import {
+  Cell as _Cell,
+  isPatternState,
+  Pattern as _Pattern,
+  PatternState,
+  RandomPatternState,
+  switchPattern,
+} from "./Patterns";
+export { keyOfPatternGroup } from "./Patterns";
+
+export type Cell = _Cell;
+export type Pattern = _Pattern;
 export type { CGOL };
 
 class CGOL {
   // 状態
-  private _state: Array<Int8Array>;
+  private _state: Cell[][];
   // 高さ
   private _height: number;
   // 幅
@@ -12,7 +22,7 @@ class CGOL {
   // 世代
   private _gen: number;
 
-  constructor(state: Array<Int8Array>, gen: number) {
+  constructor(state: Cell[][], gen: number) {
     this._state = state;
     this._height = state.length;
     this._width = state[0].length;
@@ -33,9 +43,9 @@ class CGOL {
   }
 
   generate(): CGOL {
-    const nextState: Array<Int8Array> = [];
+    const nextState: Cell[][] = [];
     for (let y = 0; y < this._height; y++) {
-      const nextColumn = new Int8Array(this._width);
+      const nextColumn = new Array<Cell>(this._width);
       for (let x = 0; x < this._width; x++) {
         // 自分と近傍のセルの状態を取得
         // c: center (自分自身)
@@ -73,7 +83,7 @@ class CGOL {
     return new CGOL(this._state, this._gen);
   }
 
-  get state(): Array<Int8Array> {
+  get state(): Cell[][] {
     return this._state;
   }
 
@@ -82,28 +92,26 @@ class CGOL {
   }
 }
 
-export const create = (
-  pattern: Pattern,
+const updateState = (
   width: number,
-  height: number
-): CGOL => {
-  // 最初の状態を初期化
-  const state: Array<Int8Array> = [];
+  height: number,
+  pState: PatternState | RandomPatternState
+) => {
+  const state: Cell[][] = [];
   for (let i = 0; i < height; i++) {
-    state.push(new Int8Array(width));
+    state.push(
+      isPatternState(pState)
+        ? pState(width, i)
+        : (pState as RandomPatternState)(width)
+    );
   }
+  return state;
+};
 
-  switch (pattern) {
-    // ランダムver.
-    case "random": {
-      for (let i = 0; i < state.length; i++) {
-        const column = state[i];
-        for (let j = 0; j < column.length; j++) {
-          column[j] = Math.floor(Math.random() * 2);
-        }
-      }
-      break;
-    }
-  }
-  return new CGOL(state, 1);
+export const create = (
+  width: number,
+  height: number,
+  pattern: Pattern
+): CGOL => {
+  return new CGOL(updateState(width, height, switchPattern(pattern)), 1);
 };
