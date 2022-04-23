@@ -58,6 +58,3 @@ export const stillLifes = {
     [0, 0, 0, 0, 0, 0],
   ],
 };
-
-export type StillLife = keyof typeof stillLifes;
-export const keyOfStillLifes = Object.keys(stillLifes).sort();

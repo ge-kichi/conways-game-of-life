@@ -118,6 +118,3 @@ export const oscillators = {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ],
 };
-
-export type Oscillator = keyof typeof oscillators;
-export const keyOfOscillators = Object.keys(oscillators).sort();

@@ -12,5 +12,3 @@ export const randoms = {
   "random 0.8": density[7],
   "random 0.9": density[8],
 };
-export type Random = keyof typeof randoms;
-export const keyOfRandoms = Object.keys(randoms).sort();

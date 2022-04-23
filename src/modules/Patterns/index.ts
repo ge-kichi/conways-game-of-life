@@ -1,21 +1,31 @@
 import { zipObj } from "ramda";
-import {
-  keyOfInfiniteGrowthes,
-  infiniteGrowthes,
-  InfiniteGrowth,
-} from "./InfiniteGrowthes";
-import { keyOfMethuselahs, methuselahs, Methuselah } from "./Methuselahs";
-import { keyOfOscillators, oscillators, Oscillator } from "./Oscillators";
-import { Density, keyOfRandoms, randoms, Random } from "./Randoms";
-import { keyOfSpaceShips, spaceShips, SpaceShip } from "./SpaceShips";
-import { keyOfStillLifes, stillLifes, StillLife } from "./StillLifes";
+import { guns } from "./Guns";
+import { methuselahs } from "./Methuselahs";
+import { oscillators } from "./Oscillators";
+import { Density, randoms } from "./Randoms";
+import { spaceShips } from "./SpaceShips";
+import { stillLifes } from "./StillLifes";
+
+type Gun = keyof typeof guns;
+type Methuselah = keyof typeof methuselahs;
+type Oscillator = keyof typeof oscillators;
+type Random = keyof typeof randoms;
+type SpaceShip = keyof typeof spaceShips;
+type StillLife = keyof typeof stillLifes;
+
+const keyOfGuns = Object.keys(guns).sort();
+const keyOfMethuselahs = Object.keys(methuselahs).sort();
+const keyOfOscillators = Object.keys(oscillators).sort();
+const keyOfRandoms = Object.keys(randoms).sort();
+const keyOfSpaceShips = Object.keys(spaceShips).sort();
+const keyOfStillLifes = Object.keys(stillLifes).sort();
 
 export type Pattern =
   | Random
   | StillLife
   | Oscillator
   | SpaceShip
-  | InfiniteGrowth
+  | Gun
   | Methuselah;
 
 export const keyOfPatternGroup = zipObj(
@@ -24,16 +34,15 @@ export const keyOfPatternGroup = zipObj(
     "still-lifes",
     "oscillators",
     "space-ships",
-    "infinite-growthes",
+    "gun",
     "methuselahs",
-    "others",
   ],
   [
     keyOfRandoms,
     keyOfStillLifes,
     keyOfOscillators,
     keyOfSpaceShips,
-    keyOfInfiniteGrowthes,
+    keyOfGuns,
     keyOfMethuselahs,
   ]
 );
@@ -79,10 +88,8 @@ export const switchPattern = (
     case includes(keyOfSpaceShips): {
       return withPatternState(spaceShips[pattern as SpaceShip] as Cell[][]);
     }
-    case includes(keyOfInfiniteGrowthes): {
-      return withPatternState(
-        infiniteGrowthes[pattern as InfiniteGrowth] as Cell[][]
-      );
+    case includes(keyOfGuns): {
+      return withPatternState(guns[pattern as Gun] as Cell[][]);
     }
     case includes(keyOfMethuselahs): {
       return withPatternState(methuselahs[pattern as Methuselah] as Cell[][]);

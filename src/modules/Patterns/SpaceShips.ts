@@ -32,6 +32,3 @@ export const spaceShips = {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
   ],
 };
-
-export type SpaceShip = keyof typeof spaceShips;
-export const keyOfSpaceShips = Object.keys(spaceShips).sort();

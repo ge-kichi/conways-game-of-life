@@ -5,7 +5,7 @@ import { Cell, CGOL, create } from "@/modules/CGOL";
 
 const cellSize = 12;
 const cellSide = Math.floor(cellSize * 0.9);
-const waitTime = 100;
+const waitTime = 200;
 const fps = 12;
 
 const { Pattern, PlayState } = GetterTypes;

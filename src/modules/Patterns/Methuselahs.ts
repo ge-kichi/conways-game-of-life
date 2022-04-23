@@ -21,6 +21,3 @@ export const methuselahs = {
     [0, 0, 0, 0, 0],
   ],
 };
-
-export type Methuselah = keyof typeof methuselahs;
-export const keyOfMethuselahs = Object.keys(methuselahs).sort();
